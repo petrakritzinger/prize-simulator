@@ -68,7 +68,7 @@ class SimulateMonth extends React.Component {
                 prizes.push(prize);
                 totalAmount += prize;
                 total += prize;
-                if (prize === 0)
+                if (prize <= 0)
                     zeroes ++;
                 else if (prize < 100)
                     m0_100 ++;
@@ -132,7 +132,7 @@ class SimulateMonth extends React.Component {
         if (rand <this.state.chanceThousand) {
             //console.log("****");
             thousands = this.GetRandomIntFromMinMax(this.state.minDigitThousand, this.state.maxDigitThousand, rand);
-            if (thousands === this.state.maxDigitThousand)
+            if (thousands >= this.state.maxDigitThousand)
                 return thousands*1000;
             hundreds = this.GetHundreds(Math.random());
             tens = this.GetTens(Math.random());

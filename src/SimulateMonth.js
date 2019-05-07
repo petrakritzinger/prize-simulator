@@ -60,7 +60,7 @@ class SimulateMonth extends React.Component {
             let m1000Plus = 0;
 
             for (let user = 0; user < this.state.newUsers; user++) {
-                var prize = this.GetNewRandom();
+                let prize = this.GetNewRandom();
                 // if (prize === 0)
                 //     console.log("Sorry");
                 // else
@@ -122,7 +122,7 @@ class SimulateMonth extends React.Component {
         return this.GetRandomIntFromMinMax(this.state.minDigitOne, this.state.maxDigitOne, rand);
     }
 
-    GetNewRandom() {
+    GetNewRandom(singleSpin=false) {
         let thousands = 0;
         let hundreds = 0;
         let tens = 0;
@@ -132,8 +132,15 @@ class SimulateMonth extends React.Component {
         if (rand <this.state.chanceThousand) {
             //console.log("****");
             thousands = this.GetRandomIntFromMinMax(this.state.minDigitThousand, this.state.maxDigitThousand, rand);
-            if (thousands >= this.state.maxDigitThousand)
+            if (thousands >= this.state.maxDigitThousand) {
+                if (singleSpin) {
+                    this.setState({singlespin1000: thousands});
+                    this.setState({singlespin100: 0});
+                    this.setState({singlespin10: 0});
+                    this.setState({singlespin1: 0});
+                }
                 return thousands*1000;
+            }
             hundreds = this.GetHundreds(Math.random());
             tens = this.GetTens(Math.random());
             ones = this.GetOnes(Math.random());
@@ -153,8 +160,22 @@ class SimulateMonth extends React.Component {
             //console.log("*");
             ones = this.GetOnes(rand);
         }
-        else
+        else {
+            if (singleSpin) {
+                this.setState({singlespin1000: 0});
+                this.setState({singlespin100: 0});
+                this.setState({singlespin10: 0});
+                this.setState({singlespin1: 0});
+            }
             return 0;
+        }
+        
+        if (singleSpin) {
+            this.setState({singlespin1000: thousands});
+            this.setState({singlespin100: hundreds});
+            this.setState({singlespin10: tens});
+            this.setState({singlespin1: ones});
+        }
         
         return (thousands * 1000 + hundreds * 100 + tens * 10 + ones);
 
@@ -198,6 +219,12 @@ class SimulateMonth extends React.Component {
         
         event.preventDefault(); 
         this.Simulate();
+    };
+
+    onSingleFormSubmit = event => {        
+        event.preventDefault(); 
+        let prize = this.GetNewRandom(true);
+        
     };
 
     render() {
@@ -331,6 +358,25 @@ class SimulateMonth extends React.Component {
 
                 </div>
                 </form>
+
+                <form onSubmit={this.onSingleFormSubmit} className="ui form">
+                <div className="ui grid">
+                    
+                        <div className="three wide column"><label>Single Spin</label></div>
+                        <div className="two wide column"><button formAction='submit' className="ui violet button">Spin!</button></div>
+                        
+                        <div className="six wide column">
+                            <label className="ui teal circular huge label">{this.state.singlespin1000}</label>
+                            <label className="ui blue circular huge label">{this.state.singlespin100}</label>
+                            <label className="ui violet circular huge label">{this.state.singlespin10}</label>
+                            <label className="ui purple circular huge label">{this.state.singlespin1}</label>
+                        </div>
+                        
+                    
+
+                </div>
+                </form>
+
                 <div className="ui grid">
                     <div className="seven column row">
                         <div className="column"></div>
